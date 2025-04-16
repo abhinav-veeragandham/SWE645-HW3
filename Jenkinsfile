@@ -10,7 +10,7 @@ pipeline {
   stages {
     stage('Clone Repo') {
       steps {
-        git 'https://github.com/abhinav-veeragandham/SWE645-HW3.git'
+        git branch: 'main', url: 'https://github.com/abhinav-veeragandham/SWE645-HW3.git'
       }
     }
 
