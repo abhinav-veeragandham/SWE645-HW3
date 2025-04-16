@@ -2,7 +2,6 @@ pipeline {
   agent any
 
   environment {
-    DOCKERHUB_CREDENTIALS = credentials('dockerhub')
     BACKEND_IMAGE = "abhinav31714/swe645-a3-backend:v2"
     FRONTEND_IMAGE = "abhinav31714/swe645-a3-frontend:v2"
   }
@@ -39,11 +38,20 @@ pipeline {
 
     stage('Push Docker Images') {
       steps {
-        script {
-          docker.withRegistry('https://index.docker.io/v1/', DOCKERHUB_CREDENTIALS) {
-            sh "docker push $BACKEND_IMAGE"
-            sh "docker push $FRONTEND_IMAGE"
-          }
+        withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+          sh '''
+            echo "🔐 Logging into Docker Hub..."
+            echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+
+            echo "📤 Pushing backend image..."
+            docker push $BACKEND_IMAGE
+
+            echo "📤 Pushing frontend image..."
+            docker push $FRONTEND_IMAGE
+
+            echo "🚪 Logging out from Docker Hub..."
+            docker logout
+          '''
         }
       }
     }
