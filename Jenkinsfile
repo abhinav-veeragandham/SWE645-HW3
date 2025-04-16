@@ -28,31 +28,32 @@ pipeline {
     }
 
     stage('Build Frontend') {
-      options {
-        timeout(time: 10, unit: 'MINUTES')  // prevent infinite hang on npm
-      }
-      steps {
-        dir('student-survey-app') {
-          sh """
-            echo "Node version: $(node -v)"
-            echo "NPM version: $(npm -v)"
+  options {
+    timeout(time: 10, unit: 'MINUTES')
+  }
+  steps {
+    dir('student-survey-app') {
+      sh """
+        echo "Node version: \$(node -v)"
+        echo "NPM version: \$(npm -v)"
 
-            echo "Cleaning workspace..."
-            rm -rf node_modules package-lock.json dist
+        echo "Cleaning workspace..."
+        rm -rf node_modules package-lock.json dist
 
-            echo "Installing dependencies..."
-            npm config set registry https://registry.npmjs.org/
-            npm install --legacy-peer-deps --no-audit --no-fund
+        echo "Installing dependencies..."
+        npm config set registry https://registry.npmjs.org/
+        npm install --legacy-peer-deps --no-audit --no-fund
 
-            echo "Building Vue frontend..."
-            npm run build
-          """
+        echo "Building Vue frontend..."
+        npm run build
 
-          // Dockerfile should be inside student-survey-app/
-          sh "docker build -t ${FRONTEND_IMAGE} ."
-        }
-      }
+        echo "Building Docker image for frontend..."
+        docker build -t ${FRONTEND_IMAGE} .
+      """
     }
+  }
+}
+
 
     stage('Push Docker Images') {
       steps {
