@@ -28,31 +28,32 @@ pipeline {
     }
 
     stage('Build Frontend') {
-      steps {
-        timeout(time: 10, unit: 'MINUTES') {
-          dir('student-survey-app') {
-            sh '''
-              echo "🔧 Building Frontend..."
-              echo "Node version: $(node -v)"
-              echo "NPM version: $(npm -v)"
+  options {
+    timeout(time: 10, unit: 'MINUTES')
+  }
+  steps {
+    dir('student-survey-app') {
+      sh '''
+        echo "🔧 Building Frontend..."
+        echo "Node version: $(node -v)"
+        echo "NPM version: $(npm -v)"
 
-              echo "Cleaning workspace..."
-              rm -rf node_modules package-lock.json dist
+        echo "Cleaning workspace..."
+        rm -rf node_modules dist
 
-              echo "Installing dependencies..."
-              npm config set registry https://registry.npmjs.org/
-              npm ci --legacy-peer-deps --prefer-offline --no-audit --no-fund
+        echo "Installing dependencies with npm ci..."
+        npm ci --legacy-peer-deps --prefer-offline --no-audit --no-fund
 
-              echo "Compiling frontend build..."
-              npm run build
+        echo "Building Vue frontend..."
+        npm run build
 
-              echo "Creating Docker image for frontend..."
-              docker build -f Dockerfile -t $FRONTEND_IMAGE .
-            '''
-          }
-        }
-      }
+        echo "Building Docker image for frontend..."
+        docker build -t ${FRONTEND_IMAGE} .
+      '''
     }
+  }
+}
+
 
     stage('Push Docker Images') {
       steps {
