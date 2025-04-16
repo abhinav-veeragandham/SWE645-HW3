@@ -36,7 +36,8 @@ pipeline {
         npm config set registry https://registry.npmjs.org/
 
         echo "Running npm install..."
-        npm install --no-audit --no-fund
+        export CI=true
+        npm install --legacy-peer-deps --no-audit --no-fund --verbose
 
         echo "Building frontend..."
         npm run build
