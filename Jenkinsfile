@@ -41,7 +41,7 @@ pipeline {
 
               echo "Installing dependencies..."
               npm config set registry https://registry.npmjs.org/
-              npm install --legacy-peer-deps --no-audit --no-fund
+              npm ci --legacy-peer-deps --prefer-offline --no-audit --no-fund
 
               echo "Compiling frontend build..."
               npm run build
