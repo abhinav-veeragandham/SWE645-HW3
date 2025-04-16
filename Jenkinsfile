@@ -21,46 +21,45 @@ pipeline {
           sh '''
             echo "🔧 Building Spring Boot Backend..."
             mvn clean package -DskipTests
-            docker build -f Dockerfile.backend -t $BACKEND_IMAGE .
+            docker build -f Dockerfile.backend -t ${BACKEND_IMAGE} .
           '''
         }
       }
     }
 
     stage('Build Frontend') {
-  options {
-    timeout(time: 10, unit: 'MINUTES')
-  }
-  steps {
-    dir('student-survey-app') {
-      sh '''
-        echo "🔧 Building Frontend..."
-        echo "Node version: $(node -v)"
-        echo "NPM version: $(npm -v)"
+      options {
+        timeout(time: 25, unit: 'MINUTES') // Increased timeout to avoid canceling build
+      }
+      steps {
+        dir('student-survey-app') {
+          sh '''
+            echo "🔧 Building Frontend..."
+            echo "Node version: $(node -v)"
+            echo "NPM version: $(npm -v)"
 
-        echo "Cleaning workspace..."
-        rm -rf node_modules dist
+            echo "Cleaning workspace..."
+            rm -rf node_modules dist
 
-        echo "Installing dependencies with npm ci..."
-        npm install --legacy-peer-deps --prefer-offline --no-audit --no-fund
+            echo "Installing dependencies with npm install..."
+            npm install --legacy-peer-deps --prefer-offline --no-audit --no-fund
 
-        echo "Building Vue frontend..."
-        npm run build
+            echo "Building Vue frontend..."
+            npm run build
 
-        echo "Building Docker image for frontend..."
-        docker build -t ${FRONTEND_IMAGE} .
-      '''
+            echo "Building Docker image for frontend..."
+            docker build -t ${FRONTEND_IMAGE} .
+          '''
+        }
+      }
     }
-  }
-}
-
 
     stage('Push Docker Images') {
       steps {
         script {
           docker.withRegistry('https://index.docker.io/v1/', DOCKERHUB_CREDENTIALS) {
-            sh "docker push $BACKEND_IMAGE"
-            sh "docker push $FRONTEND_IMAGE"
+            sh "docker push ${BACKEND_IMAGE}"
+            sh "docker push ${FRONTEND_IMAGE}"
           }
         }
       }
@@ -70,11 +69,11 @@ pipeline {
       steps {
         sh '''
           echo "🚀 Deploying backend..."
-          kubectl set image deployment/studentsurvey645-backend container-0=$BACKEND_IMAGE -n default
+          kubectl set image deployment/studentsurvey645-backend container-0=${BACKEND_IMAGE} -n default
           kubectl rollout restart deployment/studentsurvey645-backend -n default
 
           echo "🚀 Deploying frontend..."
-          kubectl set image deployment/studentsurvey645-frontend container-0=$FRONTEND_IMAGE -n default
+          kubectl set image deployment/studentsurvey645-frontend container-0=${FRONTEND_IMAGE} -n default
           kubectl rollout restart deployment/studentsurvey645-frontend -n default
         '''
       }
