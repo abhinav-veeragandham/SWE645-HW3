@@ -1,0 +1,55 @@
+# version: '3.8'
+
+# services:
+#   backend:
+#     build:
+#       context: .
+#       dockerfile: Dockerfile.backend
+#     container_name: survey-backend
+#     ports:
+#       - "8080:8080"
+#     environment:
+#       - SPRING_DATASOURCE_URL=jdbc:mysql://studentsurveydb.cf85iz6pp2p2.us-east-1.rds.amazonaws.com:3306/studentsurveydb
+#       - SPRING_DATASOURCE_USERNAME=admin
+#       - SPRING_DATASOURCE_PASSWORD=password
+
+#   frontend:
+#     build:
+#       context: .
+#       dockerfile: Dockerfile.frontend
+#     container_name: survey-frontend
+#     ports:
+#       - "80:80"
+#     depends_on:
+#       - backend
+
+#   mysql:
+#     image: mysql:8
+#     container_name: mysql
+#     environment:
+#       MYSQL_ROOT_PASSWORD: password
+#       MYSQL_DATABASE: studentsurveydb
+#     ports:
+#       - "3306:3306"
+
+version: '3.8'
+
+services:
+  backend:
+    image: abhinav31714/survey-backend:latest
+    container_name: survey-backend
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://studentsurveydb.cf85iz6pp2p2.us-east-1.rds.amazonaws.com:3306/studentsurveydb
+      - SPRING_DATASOURCE_USERNAME=admin
+      - SPRING_DATASOURCE_PASSWORD=password
+
+  frontend:
+    image: abhinav31714/survey-frontend:latest
+    container_name: survey-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
