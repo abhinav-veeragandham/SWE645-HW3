@@ -24,14 +24,30 @@ pipeline {
     }
 
     stage('Build Frontend') {
-      steps {
-        dir('student-survey-app') {
-          sh 'npm install'
-          sh 'npm run build'
-          sh 'docker build -f Dockerfile -t $FRONTEND_IMAGE .'
-        }
-      }
+  steps {
+    dir('student-survey-app') {
+      sh '''
+        echo "Node version:" && node -v
+        echo "NPM version:" && npm -v
+        echo "Cleaning up node_modules and package-lock.json..."
+        rm -rf node_modules package-lock.json
+
+        echo "Setting NPM registry to default"
+        npm config set registry https://registry.npmjs.org/
+
+        echo "Running npm install..."
+        npm install --no-audit --no-fund
+
+        echo "Building frontend..."
+        npm run build
+
+        echo "Building Docker image for frontend..."
+        docker build -f Dockerfile -t $FRONTEND_IMAGE .
+      '''
     }
+  }
+}
+
 
     stage('Push Images') {
       steps {
