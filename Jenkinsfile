@@ -42,7 +42,7 @@ pipeline {
         rm -rf node_modules dist
 
         echo "Installing dependencies with npm ci..."
-        npm ci --legacy-peer-deps --prefer-offline --no-audit --no-fund
+        npm install --legacy-peer-deps --prefer-offline --no-audit --no-fund
 
         echo "Building Vue frontend..."
         npm run build
