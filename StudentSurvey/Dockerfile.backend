@@ -5,7 +5,7 @@ FROM eclipse-temurin:22-jdk
 WORKDIR /app
 
 # Copy the jar file
-COPY StudentSurvey/target/StudentSurvey-0.0.1-SNAPSHOT.jar app.jar
+COPY target/StudentSurvey-0.0.1-SNAPSHOT.jar app.jar
 
 # Expose the port Spring Boot runs on
 EXPOSE 8080
