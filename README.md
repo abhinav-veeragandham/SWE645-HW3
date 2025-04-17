@@ -35,13 +35,6 @@ This project is a full-stack microservices-based web application built as part o
 
     Exposed via NodePort for external access
 
-📂 Project Structure
-
-.
-├── StudentSurvey/          # Spring Boot backend (Dockerfile.backend)
-├── student-survey-app/    # Vue.js frontend (Dockerfile + dist/)
-├── Jenkinsfile            # CI/CD pipeline
-├── nginx.conf             # SPA routing support for frontend
 
 📌 Deployment Flow
 
