@@ -17,7 +17,7 @@ pipeline {
       steps {
         dir('StudentSurvey') {
           sh '''
-            echo "🔧 Building Spring Boot Backend..."
+            echo "Building Spring Boot Backend..."
             mvn clean package -DskipTests
             docker build -f Dockerfile.backend -t $BACKEND_IMAGE .
           '''
@@ -29,7 +29,7 @@ pipeline {
       steps {
         dir('student-survey-app') {
           sh '''
-            echo "📦 Using pre-built frontend dist folder..."
+            echo "Using pre-built frontend dist folder..."
             docker build -t $FRONTEND_IMAGE .
           '''
         }
@@ -40,16 +40,16 @@ pipeline {
       steps {
         withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
           sh '''
-            echo "🔐 Logging into Docker Hub..."
+            echo "Logging into Docker Hub..."
             echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
-            echo "📤 Pushing backend image..."
+            echo "Pushing backend image..."
             docker push $BACKEND_IMAGE
 
-            echo "📤 Pushing frontend image..."
+            echo "Pushing frontend image..."
             docker push $FRONTEND_IMAGE
 
-            echo "🚪 Logging out from Docker Hub..."
+            echo "Logging out from Docker Hub..."
             docker logout
           '''
         }
@@ -59,11 +59,11 @@ pipeline {
     stage('Deploy to Kubernetes') {
       steps {
         sh '''
-          echo "🚀 Deploying backend..."
+          echo "Deploying backend..."
           kubectl set image deployment/studentsurvey645-backend container-0=$BACKEND_IMAGE -n default
           kubectl rollout restart deployment/studentsurvey645-backend -n default
 
-          echo "🚀 Deploying frontend..."
+          echo "Deploying frontend..."
           kubectl set image deployment/studentsurvey645-frontend container-0=$FRONTEND_IMAGE -n default
           kubectl rollout restart deployment/studentsurvey645-frontend -n default
         '''
@@ -73,10 +73,10 @@ pipeline {
 
   post {
     success {
-      echo '✅ Deployment successful!'
+      echo 'Deployment successful!'
     }
     failure {
-      echo '❌ Deployment failed. Check the logs above.'
+      echo 'Deployment failed.'
     }
   }
 }
