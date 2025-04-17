@@ -18,9 +18,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/surveys")
-@CrossOrigin(origins = "http://34.206.222.125:30171")
 public class SurveyController {
 
     @Autowired
