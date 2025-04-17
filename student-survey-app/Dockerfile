@@ -1,10 +1,7 @@
-
 FROM nginx:alpine
 
 COPY dist/ /usr/share/nginx/html
-
-# Optional: custom nginx config
-# COPY nginx.conf /etc/nginx/nginx.conf
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
 
