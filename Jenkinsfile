@@ -3,7 +3,7 @@ pipeline {
 
   environment {
     BACKEND_IMAGE = "abhinav31714/swe645-a3-backend:v2"
-    FRONTEND_IMAGE = "abhinav31714/swe645-a3-frontend:v2"
+    FRONTEND_IMAGE = "abhinav31714/swe645-a3-frontend:v3"
   }
 
   stages {
