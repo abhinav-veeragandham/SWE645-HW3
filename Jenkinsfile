@@ -60,9 +60,12 @@ pipeline {
       steps {
         sh '''
           echo "Deploying backend..."
+          export KUBECONFIG=/var/lib/jenkins/.kube/config
+          kubectl config set-cluster default-cluster --insecure-skip-tls-verify=true
+    
           kubectl set image deployment/studentsurvey645-backend container-0=$BACKEND_IMAGE -n default
           kubectl rollout restart deployment/studentsurvey645-backend -n default
-
+    
           echo "Deploying frontend..."
           kubectl set image deployment/studentsurvey645-frontend container-0=$FRONTEND_IMAGE -n default
           kubectl rollout restart deployment/studentsurvey645-frontend -n default
